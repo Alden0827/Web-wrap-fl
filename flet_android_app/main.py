@@ -21,8 +21,12 @@ def main(page: ft.Page):
 
     # Main content
     loading_bar = ft.ProgressBar(visible=False)
+
+    # Load last URL or use default
+    initial_url = page.client_storage.get("last_url") or "https://flet.dev"
+
     webview = ft.WebView(
-        "https://flet.dev",
+        initial_url,
         expand=True,
         on_page_started=lambda e: show_loading_bar(True),
         on_page_ended=lambda e: show_loading_bar(False),
@@ -38,6 +42,7 @@ def main(page: ft.Page):
             if url:
                 webview.url = url
                 webview.update()
+                page.client_storage.set("last_url", url)  # Save the new URL
             page.dialog.open = False
             page.update()
 
